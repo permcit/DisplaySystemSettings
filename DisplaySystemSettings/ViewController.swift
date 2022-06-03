@@ -9,11 +9,28 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        setupView()
     }
 
+    // MARK: - Settings
+    
+    private func setupView() {
+        navigationItem.title = "Настройки"
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    private func setupHierarcy() {
+        
+    }
+    
+    private func setupLayout() {
+        
+    }
 
 }
 
