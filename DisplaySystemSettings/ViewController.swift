@@ -14,7 +14,7 @@ struct SettingsOption {
 }
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     var settings = [SettingsOption]()
     
     private lazy var tableView: UITableView = {
@@ -22,7 +22,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.backgroundColor = .white
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifire)
         return tableView
     }()
     
@@ -30,12 +30,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configure()
         view.backgroundColor = .white
         setupView()
         setupHierarcy()
         setupLayout()
     }
-
+    
+    // MARK: - Function
+    
+    func configure() {
+        self.settings = Array(0...20).compactMap({
+            SettingsOption(title: "Item \($0)", icon: UIImage(systemName: "play"), iconBackgroundColor: .orange)
+        })
+    }
+    
     // MARK: - Settings
     
     private func setupView() {
@@ -63,8 +72,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let setting = settings[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = setting.title
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.identifire, for: indexPath) as? SettingTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.configure(with: setting)
         return cell
     }
     
@@ -73,6 +84,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
-
+    
 }
 
