@@ -45,14 +45,21 @@ class SettingTableViewCell: UITableViewCell {
     }
     
     private func setupLayout() {
-        let size: CGFloat = contentView.frame.size.height - 12
-        iconContainer.frame = CGRect(x: 15, y: 6, width: size, height: size)
-        let imageSize: CGFloat = size/1.5
-        iconImageView.frame = CGRect(x: (size-imageSize)/2, y: (size-imageSize)/2, width: imageSize, height: imageSize)
-        label.frame = CGRect(x: 25 + iconContainer.frame.size.width,
-                             y: 0,
-                             width: contentView.frame.size.width - 20 - iconContainer.frame.size.width,
-                             height: contentView.frame.size.height)
+        
+        NSLayoutConstraint.activate([
+            iconContainer.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            iconContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            iconContainer.widthAnchor.constraint(equalToConstant: 40),
+            iconContainer.heightAnchor.constraint(equalToConstant: 40),
+            
+            iconImageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
+            iconImageView.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor,constant: 3),
+            iconImageView.widthAnchor.constraint(equalToConstant: 35),
+            iconImageView.heightAnchor.constraint(equalToConstant: 35),
+            
+            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: iconContainer.trailingAnchor, constant: 10)
+        ])
     }
     
     func configure(with settings: SettingsOption) {
