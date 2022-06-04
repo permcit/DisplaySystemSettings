@@ -7,22 +7,40 @@
 
 import UIKit
 
+struct Section {
+    let title: String
+    let options: [SettingOptionalType]
+}
+
+enum SettingOptionalType {
+    case staticCell(type: SettingsOption)
+    case switchCell(type: SettingsSwitchOptions)
+}
+
 struct SettingsOption {
     let title: String
     let icon: UIImage?
     let iconBackgroundColor: UIColor
 }
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+struct SettingsSwitchOptions {
+    let title: String
+    let icon: UIImage?
+    let iconBackgroundColor: UIColor
+    var isOn: Bool
+}
 
-    var settings = [SettingsOption]()
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    var settings = [Section]()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView.init(frame: .zero, style: .grouped)
         tableView.backgroundColor = .white
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifire)
+        tableView.register(SwitchTableViewCell.self, forCellReuseIdentifier: SwitchTableViewCell.identifire)
         return tableView
     }()
     
@@ -30,12 +48,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configure()
         view.backgroundColor = .white
         setupView()
         setupHierarcy()
         setupLayout()
     }
-
+    
+    // MARK: - Function
+    
+    func configure() {
+        settings.append(Section(title: "General", options: [
+            .switchCell(type: SettingsSwitchOptions(title: "Авиарежим", icon: UIImage(systemName: "airplane"), iconBackgroundColor: .orange, isOn: true)),
+            .staticCell(type: SettingsOption(title: "Wi-Fi", icon: UIImage(systemName: "wifi"), iconBackgroundColor: .blue))
+        ]))
+        
+        settings.append(Section(title: "General", options: [
+            .staticCell(type: SettingsOption(title: "Tytytytyty", icon: UIImage(systemName: "play"), iconBackgroundColor: .white))
+        ]))
+    }
+    
     // MARK: - Settings
     
     private func setupView() {
@@ -62,10 +94,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let setting = settings[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = setting.title
-        return cell
+        let setting = settings[indexPath.section].options[indexPath.row]
+        
+        switch setting.self {
+        case .staticCell(let setting):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.identifire, for: indexPath) as? SettingTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.accessoryType = .disclosureIndicator
+            cell.configure(with: setting)
+            return cell
+        case .switchCell(let setting):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SwitchTableViewCell.identifire, for: indexPath) as? SwitchTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.accessoryType = .none
+            cell.selectionStyle = .none
+            cell.configure(with: setting)
+            return cell
+        }
     }
     
     // MARK: - UITableViewDelegate
@@ -73,6 +120,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
-
+    
 }
 
