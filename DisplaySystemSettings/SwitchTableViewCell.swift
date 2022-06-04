@@ -1,5 +1,5 @@
 //
-//  SettingTableViewCell.swift
+//  SwitchTableViewCell.swift
 //  DisplaySystemSettings
 //
 //  Created by Роман Назаров on 03.06.2022.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-class SettingTableViewCell: UITableViewCell {
+class SwitchTableViewCell: UITableViewCell {
     
-    static let identifire = "SettingTableViewCell"
+    static let identifire = "SwitchTableViewCell"
     
     private let iconContainer: UIView = {
         let view = UIView()
@@ -24,6 +24,7 @@ class SettingTableViewCell: UITableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
+        imageView.tintColor = .white
         return imageView
     }()
     
@@ -36,12 +37,21 @@ class SettingTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let mySwitch: UISwitch = {
+       let mySwitch = UISwitch()
+        mySwitch.onTintColor = .green
+        mySwitch.translatesAutoresizingMaskIntoConstraints = false
+        return mySwitch
+    }()
+    
     private func setupHierarchy() {
-        contentView.addSubview(iconContainer)
-        iconContainer.addSubview(iconImageView)
         contentView.addSubview(label)
+        contentView.addSubview(iconContainer)
+        contentView.addSubview(mySwitch)
+        iconContainer.addSubview(iconImageView)
+        
         contentView.clipsToBounds = true
-        accessoryType = .disclosureIndicator
+        accessoryType = .none
     }
     
     private func setupLayout() {
@@ -58,14 +68,18 @@ class SettingTableViewCell: UITableViewCell {
             iconImageView.heightAnchor.constraint(equalToConstant: 35),
             
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: iconContainer.trailingAnchor, constant: 10)
+            label.leadingAnchor.constraint(equalTo: iconContainer.trailingAnchor, constant: 10),
+            
+            mySwitch.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            mySwitch.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -15)
         ])
     }
     
-    func configure(with settings: SettingsOption) {
+    func configure(with settings: SettingsSwitchOptions) {
         label.text = settings.title
         iconImageView.image = settings.icon
         iconContainer.backgroundColor = settings.iconBackgroundColor
+        mySwitch.isOn = settings.isOn
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -84,5 +98,6 @@ class SettingTableViewCell: UITableViewCell {
         iconImageView.image = nil
         label.text = nil
         iconContainer.backgroundColor = nil
+        mySwitch.isOn = false
     }
 }
